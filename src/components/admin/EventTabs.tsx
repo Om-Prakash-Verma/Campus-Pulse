@@ -25,6 +25,7 @@ import EventForm from "./EventForm";
 import { useToast } from "@/hooks/use-toast";
 import { slugify } from '@/lib/utils';
 
+// Schema for event form validation
 export const eventSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
@@ -35,15 +36,18 @@ export const eventSchema = z.object({
   image: z.string().optional(),
   tags: z.string().optional(),
 });
+// Type for event form data
 export type EventSchema = z.infer<typeof eventSchema>;
 
 
+// Props for the EventTabs component
 interface EventTabsProps {
     club: Club;
     allEvents: Event[];
     setAllEvents: (events: Event[]) => void;
 }
 
+// A reusable table component for displaying a list of events
 const EventTable = ({ events, title, onEdit, onDelete }: { events: Event[], title: string, onEdit: (event: Event) => void, onDelete: (id: string) => void }) => (
     <Card className="glassmorphism">
       <CardHeader><CardTitle>{title}</CardTitle></CardHeader>
@@ -85,12 +89,14 @@ const EventTable = ({ events, title, onEdit, onDelete }: { events: Event[], titl
       </Card>
 );
 
+// Main component for managing and displaying club events
 export default function EventTabs({ club, allEvents, setAllEvents }: EventTabsProps) {
     const { toast } = useToast();
     const [isEventFormOpen, setIsEventFormOpen] = useState(false);
     const [editingEvent, setEditingEvent] = useState<Event | null>(null);
     const [deletingEventId, setDeletingEventId] = useState<string | null>(null);
 
+    // Initialize the form with react-hook-form and zod for validation
     const eventForm = useForm<EventSchema>({
       resolver: zodResolver(eventSchema),
       defaultValues: {
@@ -99,6 +105,7 @@ export default function EventTabs({ club, allEvents, setAllEvents }: EventTabsPr
       }
     });
 
+    // Opens the event form, pre-filling with data if an event is being edited
     const handleOpenEventForm = (event: Event | null) => {
         setEditingEvent(event);
         if (event) {
@@ -118,6 +125,7 @@ export default function EventTabs({ club, allEvents, setAllEvents }: EventTabsPr
         setIsEventFormOpen(true);
     };
 
+    // Handles the submission of the event form
     const handleEventFormSubmit: SubmitHandler<EventSchema> = (data) => {
         const [hours, minutes] = data.time.split(':').map(Number);
         const combinedDate = new Date(data.date);
@@ -137,11 +145,13 @@ export default function EventTabs({ club, allEvents, setAllEvents }: EventTabsPr
         const { time, ...finalEventData } = eventData;
 
         if (editingEvent) {
+            // Updates an existing event
             setAllEvents(
                 allEvents.map((e) => (e.id === editingEvent.id ? { ...e, ...finalEventData } : e))
             );
             toast({ title: "Event Updated", description: `"${data.title}" has been updated.` });
         } else {
+            // Creates a new event
             const newEvent: Event = { 
                 id: Date.now().toString(), 
                 ...finalEventData, 
@@ -155,6 +165,7 @@ export default function EventTabs({ club, allEvents, setAllEvents }: EventTabsPr
         setIsEventFormOpen(false);
     };
 
+    // Deletes an event after confirmation
     const handleDeleteEvent = () => {
         if (deletingEventId) {
             const updatedEvents = allEvents.filter(e => e.id !== deletingEventId)
@@ -164,6 +175,7 @@ export default function EventTabs({ club, allEvents, setAllEvents }: EventTabsPr
         }
     }
 
+    // Memoized separation of events into upcoming and past categories
     const { upcomingEvents, pastEvents } = useMemo(() => {
         const now = new Date();
         const clubEvents = allEvents.filter(event => event.clubId === club.id);
@@ -197,6 +209,7 @@ export default function EventTabs({ club, allEvents, setAllEvents }: EventTabsPr
                 </TabsContent>
             </Tabs>
 
+            {/* Form for creating/editing events */}
             <EventForm
                 isOpen={isEventFormOpen}
                 setIsOpen={setIsEventFormOpen}
@@ -205,6 +218,7 @@ export default function EventTabs({ club, allEvents, setAllEvents }: EventTabsPr
                 onSubmit={handleEventFormSubmit}
             />
 
+            {/* Confirmation dialog for deleting an event */}
             <AlertDialog open={!!deletingEventId} onOpenChange={() => setDeletingEventId(null)}>
                 <AlertDialogContent className="glassmorphism">
                 <AlertDialogHeader>

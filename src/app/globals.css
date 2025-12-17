@@ -1,29 +1,33 @@
+/* Import Tailwind's base, components, and utilities styles. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Define a new layer called 'base'. */
 @layer base {
+  /* Define CSS variables for the light theme. */
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 221 63% 32%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 279 99% 65%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 221 63% 42%;
-    --radius: 0.5rem;
+    --background: 240 10% 3.9%; /* Base background color */
+    --foreground: 0 0% 98%; /* Base foreground color (text) */
+    --card: 240 10% 3.9%; /* Card background color */
+    --card-foreground: 0 0% 98%; /* Card foreground color */
+    --popover: 240 10% 3.9%; /* Popover background color */
+    --popover-foreground: 0 0% 98%; /* Popover foreground color */
+    --primary: 221 63% 32%; /* Primary color */
+    --primary-foreground: 0 0% 98%; /* Foreground color for primary elements */
+    --secondary: 240 3.7% 15.9%; /* Secondary color */
+    --secondary-foreground: 0 0% 98%; /* Foreground color for secondary elements */
+    --muted: 240 3.7% 15.9%; /* Muted color */
+    --muted-foreground: 240 5% 64.9%; /* Foreground color for muted elements */
+    --accent: 279 99% 65%; /* Accent color */
+    --accent-foreground: 0 0% 98%; /* Foreground color for accent elements */
+    --destructive: 0 62.8% 30.6%; /* Destructive action color */
+    --destructive-foreground: 0 0% 98%; /* Foreground color for destructive elements */
+    --border: 240 3.7% 15.9%; /* Border color */
+    --input: 240 3.7% 15.9%; /* Input field background */
+    --ring: 221 63% 42%; /* Focus ring color */
+    --radius: 0.5rem; /* Border radius for components */
+    /* Chart colors */
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -31,6 +35,7 @@
     --chart-5: 340 75% 55%;
   }
 
+  /* Define CSS variables for the dark theme. */
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -54,21 +59,30 @@
   }
 }
 
+/* Another 'base' layer definition. This will be merged with the one above. */
 @layer base {
+  /* Apply border-border color to all elements. */
   * {
     @apply border-border;
   }
+  /* Define base body styles. */
   body {
+    /* Apply background and foreground colors from CSS variables. */
     @apply bg-background text-foreground;
+    /* Set a solid background color as a fallback. */
     background-color: #121212;
+    /* Add a decorative radial gradient background. */
     background-image: 
       radial-gradient(ellipse 80% 50% at 50% -20%, hsla(221, 63%, 32%, 0.3), transparent),
       radial-gradient(ellipse 50% 80% at 20% 110%, hsla(279, 99%, 65%, 0.2), transparent),
       radial-gradient(ellipse 50% 80% at 80% 110%, hsla(221, 63%, 32%, 0.2), transparent);
+    /* Keep the background fixed during scroll. */
     background-attachment: fixed;
   }
 
+  /* A utility class for creating a glassmorphism effect. */
   .glassmorphism {
+    /* Use card background with opacity, add blur, and a light border. */
     @apply bg-card/5 backdrop-blur-lg border border-white/10;
   }
 }

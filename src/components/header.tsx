@@ -5,29 +5,39 @@ import { Button } from './ui/button';
 import { Drama } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+// Key for storing club authentication data in session storage.
 const AUTH_SESSION_KEY = "campus-pulse-auth-club";
 
+/**
+ * The main application header.
+ * Displays the app title and navigation links.
+ * Shows "Dashboard" if a club is logged in, otherwise "Club Login".
+ */
 export function AppHeader() {
+  // State to track if a club is logged in.
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAuthChecked, setIsAuthChecked] = useState(false); // New state to prevent flicker
+  // State to prevent UI flicker by waiting for the initial auth check.
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   useEffect(() => {
+    // Checks session storage for club data to determine login status.
     const checkLoginStatus = () => {
       const clubData = sessionStorage.getItem(AUTH_SESSION_KEY);
       setIsLoggedIn(!!clubData);
       setIsAuthChecked(true); // Mark auth check as complete
     };
 
-    // Check on initial mount
+    // Check on initial component mount.
     checkLoginStatus();
 
-    // Listen for custom event to re-check status
+    // Listens for a custom 'loginChange' event to re-check status.
+    // This allows other components to trigger a re-render of the header.
     const handleLoginChange = () => {
       checkLoginStatus();
     };
     window.addEventListener('loginChange', handleLoginChange);
 
-    // Standard storage event for cross-tab sync
+    // Listens for storage events to sync login status across browser tabs.
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === AUTH_SESSION_KEY) {
         checkLoginStatus();
@@ -36,6 +46,7 @@ export function AppHeader() {
     window.addEventListener('storage', handleStorageChange);
 
 
+    // Cleanup: remove event listeners when the component unmounts.
     return () => {
       window.removeEventListener('loginChange', handleLoginChange);
       window.removeEventListener('storage', 'handleStorageChange');
@@ -53,12 +64,15 @@ export function AppHeader() {
           </span>
         </Link>
         <nav>
+          {/* Only render the button after the initial auth check is complete. */}
           {isAuthChecked && (
             isLoggedIn ? (
+              // If logged in, show a link to the admin dashboard.
               <Button asChild variant="ghost">
                 <Link href="/admin">Dashboard</Link>
               </Button>
             ) : (
+              // If not logged in, show a link to the club login page.
               <Button asChild variant="ghost">
                 <Link href="/admin">Club Login</Link>
               </Button>

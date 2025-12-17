@@ -1,6 +1,7 @@
-
+// Indicates that this file is a client-side component.
 "use client";
 
+// Import necessary React hooks, Next.js components, and custom components.
 import { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
@@ -14,37 +15,54 @@ import { EventCard } from '@/components/event-card';
 import { Mail, Phone, Link as LinkIcon, Rss } from 'lucide-react';
 import Link from 'next/link';
 
+// The main component for displaying a club's page.
 export default function ClubPage() {
+  // Fetches club and event data, and loading state from a custom hook.
   const { clubs, events, loading } = useData();
+  // Gets the URL parameters.
   const params = useParams();
+  // Extracts the club slug from the URL parameters.
   const clubSlug = params.clubSlug as string;
 
+  // Memoizes the club and its events to avoid unnecessary recalculations.
   const { club, clubEvents } = useMemo(() => {
+    // If data is loading, return null club and empty events.
     if (loading) return { club: null, clubEvents: [] };
     
+    // Finds the club that matches the slug.
     const foundClub = clubs.find((c: Club) => c.slug === clubSlug);
+    // If no club is found, return null club and empty events.
     if (!foundClub) return { club: null, clubEvents: [] };
 
+    // Filters events to find those associated with the found club.
     const foundEvents = events.filter(e => e.clubId === foundClub.id);
+    // Returns the found club and its events.
     return { club: foundClub, clubEvents: foundEvents };
   }, [clubSlug, clubs, events, loading]);
   
+  // Memoizes the separation of events into upcoming and past categories.
   const { upcomingEvents, pastEvents } = useMemo(() => {
     const now = new Date();
+    // Filters for upcoming events and sorts them by date.
     const upcoming = clubEvents
       .filter(event => new Date(event.date) >= now)
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    // Filters for past events and sorts them by date.
     const past = clubEvents
       .filter(event => new Date(event.date) < now)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    // Returns the categorized events.
     return { upcomingEvents: upcoming, pastEvents: past };
   }, [clubEvents]);
 
+  // Memoizes the club's theme style based on its theme color.
   const clubThemeStyle = useMemo(() => {
     if (!club?.themeColor) return {};
+    // Creates a CSS custom property for the theme color.
     return { '--theme-accent': club.themeColor } as React.CSSProperties;
   }, [club?.themeColor]);
 
+  // If data is loading, display a loading message.
   if (loading) {
     return (
       <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center">
@@ -53,6 +71,7 @@ export default function ClubPage() {
     );
   }
 
+  // If the club is not found, display a "not found" message.
   if (!club) {
     return (
       <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center">
@@ -64,6 +83,7 @@ export default function ClubPage() {
     );
   }
 
+  // A component to render a list of events.
   const EventList = ({ title, events }: { title: string; events: Event[] }) => (
     <div className="mb-12">
       <h2 className="text-3xl font-bold mb-6">{title}</h2>
@@ -85,6 +105,7 @@ export default function ClubPage() {
     </div>
   );
 
+  // A component to render a list of team members.
   const TeamList = ({ title, people }: { title: string; people: Person[] }) => (
     <div className='mb-8'>
         <h3 className="text-2xl font-bold mb-4">{title}</h3>
@@ -113,8 +134,10 @@ export default function ClubPage() {
     </div>
   );
 
+  // Renders the main club page.
   return (
     <div className="container mx-auto max-w-6xl px-4 py-12" style={clubThemeStyle}>
+      {/* Club header card */}
       <Card className="glassmorphism overflow-hidden mb-12">
         <CardContent className="p-6 md:p-8">
             <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
@@ -136,8 +159,10 @@ export default function ClubPage() {
         </CardContent>
       </Card>
       
+      {/* Upcoming events section */}
       <EventList title="Upcoming Events" events={upcomingEvents} />
 
+      {/* Resources section, displayed if resources exist */}
       {club.resources && club.resources.length > 0 && (
           <div className="mb-12">
               <h2 className="text-3xl font-bold mb-6">Resources</h2>
@@ -155,6 +180,7 @@ export default function ClubPage() {
           </div>
       )}
       
+      {/* Team section */}
       <div className="mb-12">
         <h2 className="text-3xl font-bold mb-6">Our Team</h2>
         <Card className="glassmorphism">
@@ -165,6 +191,7 @@ export default function ClubPage() {
         </Card>
       </div>
 
+      {/* Past events section */}
       <EventList title="Past Events" events={pastEvents} />
     </div>
   );

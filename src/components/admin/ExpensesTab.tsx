@@ -30,8 +30,10 @@ import Link from 'next/link';
 import { Input } from '../ui/input';
 import { Progress } from '../ui/progress';
 
+// Define a key for storing club authentication data in session storage.
 const AUTH_SESSION_KEY = "campus-pulse-auth-club";
 
+// Define the schema for expense validation using Zod.
 export const expenseSchema = z.object({
   name: z.string().min(2, "Expense name is required"),
   amount: z.coerce.number().min(0.01, "Amount must be greater than 0"),
@@ -40,6 +42,7 @@ export const expenseSchema = z.object({
 });
 export type ExpenseSchema = z.infer<typeof expenseSchema>;
 
+// Define the props for the ExpensesTab component.
 interface ExpensesTabProps {
     club: Club;
     clubEvents: Event[];
@@ -48,6 +51,7 @@ interface ExpensesTabProps {
     setLoggedInClub: (club: Club) => void;
 }
 
+// Define the ExpensesTab component.
 export default function ExpensesTab({ club, clubEvents, clubs, setClubs, setLoggedInClub }: ExpensesTabProps) {
     const { toast } = useToast();
     const [isExpenseFormOpen, setIsExpenseFormOpen] = useState(false);
@@ -62,6 +66,7 @@ export default function ExpensesTab({ club, clubEvents, clubs, setClubs, setLogg
     const expenses = club.expenses || [];
     const monthlyBudget = club.monthlyBudget || 0;
 
+    // Open the expense form, optionally with an expense to edit.
     const handleOpenExpenseForm = (expense: Expense | null) => {
         setEditingExpense(expense);
         if (expense) {
@@ -72,6 +77,7 @@ export default function ExpensesTab({ club, clubEvents, clubs, setClubs, setLogg
         setIsExpenseFormOpen(true);
     };
 
+    // Update the club data in the list of clubs and in session storage.
     const handleUpdateClub = (updatedClub: Club) => {
       const updatedClubs = clubs.map(c => c.id === club.id ? updatedClub : c);
       setClubs(updatedClubs);
@@ -79,6 +85,7 @@ export default function ExpensesTab({ club, clubEvents, clubs, setClubs, setLogg
       sessionStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(updatedClub));
     }
 
+    // Update the club's monthly budget.
     const handleBudgetUpdate = () => {
       const newBudget = budgetInputRef.current?.value;
       const budgetValue = parseFloat(newBudget || '0');
@@ -90,6 +97,7 @@ export default function ExpensesTab({ club, clubEvents, clubs, setClubs, setLogg
       }
     };
 
+    // Handle the submission of the expense form.
     const handleExpenseFormSubmit: SubmitHandler<ExpenseSchema> = (data) => {
         let updatedClub: Club;
 
@@ -123,6 +131,7 @@ export default function ExpensesTab({ club, clubEvents, clubs, setClubs, setLogg
         setIsExpenseFormOpen(false);
     };
 
+    // Delete an expense.
     const handleDeleteExpense = () => {
         if (!deletingExpenseId) return;
 
@@ -136,10 +145,12 @@ export default function ExpensesTab({ club, clubEvents, clubs, setClubs, setLogg
         setDeletingExpenseId(null);
     };
     
+    // Memoize the sorted expenses.
     const sortedExpenses = useMemo(() => {
         return [...expenses].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     }, [expenses]);
     
+    // Memoize the chart data.
     const chartData = useMemo(() => {
         const last6Months = Array.from({ length: 6 }, (_, i) => subMonths(new Date(), i));
         const monthlyTotals = last6Months.map(month => ({
@@ -152,6 +163,7 @@ export default function ExpensesTab({ club, clubEvents, clubs, setClubs, setLogg
         return monthlyTotals;
     }, [expenses]);
 
+    // Memoize the current month's spending.
     const currentMonthSpending = useMemo(() => {
         const now = new Date();
         return expenses
@@ -163,6 +175,7 @@ export default function ExpensesTab({ club, clubEvents, clubs, setClubs, setLogg
     const budgetProgress = monthlyBudget > 0 ? (currentMonthSpending / monthlyBudget) * 100 : 0;
 
 
+    // Configure the chart.
     const chartConfig = {
       total: {
         label: "Total",
@@ -170,6 +183,7 @@ export default function ExpensesTab({ club, clubEvents, clubs, setClubs, setLogg
       },
     }
 
+    // Memoize the events by their ID.
     const eventsById = useMemo(() => {
         return clubEvents.reduce((acc, event) => {
             acc[event.id] = event;
