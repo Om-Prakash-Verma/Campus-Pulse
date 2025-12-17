@@ -1,45 +1,27 @@
-
 {
   "compilerOptions": {
-    // Specifies the ECMAScript target version for the compiled JavaScript code.
     "target": "ES2017",
-    // A list of library files to be included in the compilation.
     "lib": ["dom", "dom.iterable", "esnext"],
-    // Allows JavaScript files to be compiled.
     "allowJs": true,
-    // Skips type checking of all declaration files (*.d.ts).
     "skipLibCheck": true,
-    // Enables all strict type-checking options.
     "strict": true,
-    // Do not emit compiler output files like JavaScript, source maps, or declarations.
     "noEmit": true,
-    // Enables compatibility with CommonJS modules.
     "esModuleInterop": true,
-    // Specifies the module code generation standard.
     "module": "esnext",
-    // Specifies how modules are resolved.
     "moduleResolution": "bundler",
-    // Allows importing modules with a .json extension.
     "resolveJsonModule": true,
-    // Ensures that each file can be transpiled without relying on other imports.
     "isolatedModules": true,
-    // Controls how JSX is emitted in JavaScript files.
     "jsx": "preserve",
-    // Enables incremental compilation.
     "incremental": true,
-    // A list of language service plugins to run.
     "plugins": [
       {
         "name": "next"
       }
     ],
-    // A series of entries which re-map imports to lookup locations relative to the 'baseUrl'.
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  // Specifies an array of filenames or patterns to include in the program.
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  // Specifies an array of filenames or patterns that should be skipped when resolving 'include'.
   "exclude": ["node_modules"]
 }

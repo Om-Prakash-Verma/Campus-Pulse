@@ -1,12 +1,6 @@
-// Imports slugify utility and Event, Club types.
 import { slugify } from './utils';
 import type { Event, Club } from './types';
 
-/**
- * Generates an ISO string for a future date.
- * @param days - The number of days from now.
- * @returns The future date as an ISO string.
- */
 function getFutureDate(days: number): string {
   const date = new Date();
   date.setDate(date.getDate() + days);
@@ -14,7 +8,7 @@ function getFutureDate(days: number): string {
   return date.toISOString();
 }
 
-// Initial seed data for clubs.
+// Initial club data
 export const initialClubs: Club[] = [
   { id: 'tech-club', slug: 'tech-club', name: 'Tech Club', password: 'tech', category: 'Tech', logo: '', description: 'The official hub for all tech enthusiasts on campus. We explore everything from coding to AI.', expenses: [], monthlyBudget: 500, resources: [] },
   { id: 'sports-club', slug: 'sports-club', name: 'Sports Club', password: 'sports', category: 'Sports', logo: '', description: 'Home of campus champions. Join us for a variety of sports and fitness activities.', expenses: [], monthlyBudget: 1000, resources: [] },
@@ -23,7 +17,6 @@ export const initialClubs: Club[] = [
   { id: 'academic-club', slug: 'academic-club', name: 'Academic Club', password: 'academic', category: 'Academic', logo: '', description: 'Fostering intellectual growth. We organize seminars, workshops, and study groups.', expenses: [], monthlyBudget: 250, resources: [] },
 ];
 
-// Initial seed data for events.
 export const initialEvents: Event[] = [
   {
     id: '1',
@@ -66,7 +59,7 @@ export const initialEvents: Event[] = [
     clubId: 'music-club',
     slug: 'spring-fest-music-night',
     title: 'Spring Fest Music Night',
-    description: 'An unforgettable night of live music featuring student bands and a headline performance by a surprise guest artist. Don't miss out!',
+    description: 'An unforgettable night of live music featuring student bands and a headline performance by a surprise guest artist. Don\'t miss out!',
     date: getFutureDate(25),
     location: 'Central Plaza',
     category: 'Music',
@@ -87,5 +80,4 @@ export const initialEvents: Event[] = [
   }
 ];
 
-// Re-exports Event, EventCategory, and Club types for easier access from other modules.
 export type { Event, EventCategory, Club } from './types';
